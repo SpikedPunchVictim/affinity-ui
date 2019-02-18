@@ -24,7 +24,10 @@
     "postinstall": ""
   },
   "dependencies": {
-    "affinity": "file:../affinity/affinity-0.0.8.tgz",
+    "@bosket/core": "^0.4.4",
+    "@bosket/tools": "^0.4.4",
+    "@bosket/vue": "^0.4.4",
+    "affinity": "file:../affinity/affinity-0.0.9.tgz",
     "affinity-xml": "file:../affinity-xml/affinity-xml-1.0.1.tgz",
     "vue": "^2.5.16",
     "vue-awesome": "^3.3.1",

@@ -55,7 +55,8 @@
    <div>
       <vue-splitter :margin="5">
          <div slot="left-pane">
-            <project-namespace class="project" :project="getProject"></project-namespace>
+            <!-- <project-namespace class="project" :project="getProject"></project-namespace> -->
+            <project-view :project="project"></project-view>
          </div>
          <div slot="right-pane">
             <details-view class="details" :object="selected"></details-view>
@@ -68,9 +69,11 @@
 import VueSplitter from "@rmp135/vue-splitter"
 import SideBar from './SideBarView/SideBarView'
 import ProjectNamespaceView from './ProjectNamespaceView/ProjectNamespaceView'
+import ProjectView from './ProjectView/ProjectView'
 import DetailsView from './DetailsView'
 //import Affinity from '@/services/affinity'
 import { mapState, mapGetters, mapActions } from 'vuex'
+import events from '@/services/events'
 
 export default {
    name: 'landing-page',
@@ -79,32 +82,26 @@ export default {
          isPopualated: false
       }
    },
-   created: function() {
-      if (this.project == null) {
-         this.createProject()
-      }
+   mounted: function() {
+      // if (this.project == null) {
+      //    this.createProject()
+      // }
+      events.main.on('project.populate', _ => {
+         this.populateProject()
+      })
    },
-   // data() {
-   //    return {
-   //       selected: null
-   //    }
-   // },
    methods: {
       ...mapActions([
-         'createProject'
-      ]),
-      // populate: function() {
-      //    if (this.project == null) {
-      //       this.project = Affinity.populate()
-      //    }
-      // }
+         'createProject',
+         'populateProject'
+      ])
    },
    computed: {
       ...mapGetters([
          'project'
       ]),
       ...mapState({
-         selected: state => state.selected.selected
+         selected: state => state.selected.selected,
       }),
       getProject: function() {
          //return this.project
@@ -112,17 +109,14 @@ export default {
       },
       hasProject: function() {
          return this.project != null
-      },
-      // populate: function() {
-      //    affinity.populate()
-      //    this.isPopualated = true
-      // }
+      }
    },
    components: {
       VueSplitter,
       SideBar,
       'project-namespace': ProjectNamespaceView,
-      DetailsView
+      DetailsView,
+      'project-view': ProjectView
    }
 }
 </script>

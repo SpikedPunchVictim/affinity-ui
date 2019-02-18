@@ -1,6 +1,7 @@
 import * as types from '../mutation-types'
 import affinity from '@/services/affinity'
 import events from '@/services/events'
+import { populateProject } from '../actions'
 
 let typeNames = [
    'bool',
@@ -29,11 +30,17 @@ events.on('project.save', (event, saveDir) => {
    affinity.save(state.project, saveDir)
 })
 
-events.main.on('project.populate', _ => {
-   console.log('Populating...')
-   affinity.fill(state.project)
-   console.log('Populating: Done')
-})
+// events.main.on('project.populate', _ => {
+//    populateProject()
+//    // console.log('Populating...')
+
+//    // if(state.project == null) {
+//    //    state.project = affinity.create()
+//    // }
+
+//    // affinity.fill(state.project)
+//    // console.log('Populating: Done')
+// })
 
 affinity.events.on('project.load.success', project => {
    console.log('Assigning Project')
@@ -47,7 +54,21 @@ affinity.events.on('project.created', project => {
 
 const mutations = {
    [types.PROJECT_CREATE_NEW](state) {
-      state.project = affinity.create()
+      let project = affinity.create()
+      state.project = project
+      console.dir(state.project)
+   },
+
+   [types.PROJECT_POPULATE](state) {
+      let project = state.project
+      state.project = null
+
+      if(project == null) {
+         project = affinity.create()
+      }
+
+      affinity.fill(project)
+      state.project = project
    },
 
    [types.UPDATE_VALUE](state, { value, update }) {

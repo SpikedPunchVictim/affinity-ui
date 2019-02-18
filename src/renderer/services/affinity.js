@@ -60,8 +60,10 @@ function save(project, saveDir) {
    emitter.emit('project.saved', { project, dir: saveDir })
 }
 
-function fill(project) {
-   Affinity.test.fill.project(project)
+function fill(project, depth = 3) {
+   console.log('filling...')
+   Affinity.test.fill.project(project, depth)
+   console.log('  : done')
 }
 
 

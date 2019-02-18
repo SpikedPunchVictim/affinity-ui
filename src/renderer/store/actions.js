@@ -61,3 +61,7 @@ export const updateQualifiedObject = ({ commit }, { obj, update }) => {
 export const createProject = ({ commit }) => {
   commit(types.PROJECT_CREATE_NEW)
 }
+
+export const populateProject = ({ commit }) => {
+  commit(types.PROJECT_POPULATE)
+}
