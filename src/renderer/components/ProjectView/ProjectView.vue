@@ -1,7 +1,7 @@
 <template>
    <div>
       <tree-view 
-         :model="project"
+         :model="model"
          :display="display"
          category="children"
          :onSelect="onSelect"
@@ -12,7 +12,7 @@
 
 <script>
 import { TreeView } from "@bosket/vue"
-import { ProjectTreeView, QualifiedObjectType } from "@/lib/proxy"
+import Tree from '@/lib/tree'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -42,8 +42,7 @@ export default {
             return
          }
 
-         this.view = new ProjectTreeView(project)
-         this.model = this.view.toArray()
+         this.model = new Tree(project)
 
          console.dir(this.model)
       }
