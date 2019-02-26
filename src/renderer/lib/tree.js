@@ -1,90 +1,100 @@
-import utils from '@/lib/utils'
-import affinity from 'affinity'
+//import utils from "@/lib/utils";
+//import { Events } from 'affinity'
+//import { Events, utils } from 'affinity'
+
+//const utils = require('./utils')
+const affinity = require('affinity')
+const { Events, utils } = require('affinity')
 
 export const NodeType = {
   Instance: "instance",
   Model: "model",
   Namespace: "namespace"
-};
+}
 
 class Node {
   constructor(qualifiedObject, array) {
-    this.qualifiedObject = qualifiedObject;
-    this.array = array;
-    this.type = Node.getType(qualifiedObject);
-    this.qualifiedObject.on(affinity.Events.disposed);
-    this.children = [];
+    this.qualifiedObject = qualifiedObject
+    this.array = array || []
+    this.type = Node.getType(qualifiedObject)
+    this.qualifiedObject.on(Events.disposed, this._onDisposed)
+    this.children = []
   }
 
   get name() {
-    return this.qualifiedObject.name;
+    return this.qualifiedObject.name
   }
 
   _onDisposed() {
-    let found = this.array.indexOf(this);
+    let found = this.array.indexOf(this)
 
     if (found) {
-      this.array.splice(found, 1);
+      this.array.splice(found, 1)
     }
   }
 
   static getType(qualifiedObject) {
     if (utils.isNamespace(qualifiedObject)) {
-      return NodeType.Namespace;
+      return NodeType.Namespace
     }
 
     if (utils.isModel(qualifiedObject)) {
-      return NodeType.Model;
+      return NodeType.Model
     }
 
     if (utils.isInstance(qualifiedObject)) {
-      return NodeType.Instance;
+      return NodeType.Instance
     }
 
     console.dir(qualifiedObject)
-    throw new Error("Unsupported Qualified Object Type for Tree.");
+    throw new Error("Unsupported Qualified Object Type for Tree.")
   }
 }
 
 export default class Tree {
   constructor(project) {
-    this.project = project;
-    this.children = [];
-    this.populate();
+    this.project = project
+    this.children = []
   }
 
   get name() {
-    return "Root";
+    return "Root"
   }
 
   get type() {
-    return NodeType.Namespace;
+    return NodeType.Namespace
   }
 
   get item() {
-    return this.project.root;
+    return this.project.root
   }
 
   populate() {
-    this.createChildren(this.project.root, this.children);
+    this.createChildren(this.project.root, this.children)
+    return [{
+      name: this.name,
+      type: this.type,
+      item: this.item,
+      children: this.children
+    }]
   }
 
   createChildren(namespace, parentList) {
-    let { children, models, instances } = namespace;
+    let { children, models, instances } = namespace
 
     for (let i = 0; i < children.length; ++i) {
-      let current = children.at(i);
-      let node = new Node(current, parentList);
-      parentList.push(node);
-      this.createChildren(current, node.children);
+      let current = children.at(i)
+      let node = new Node(current, parentList)
+      parentList.push(node)
+      this.createChildren(current, node.children)
     }
 
     for (let i = 0; i < models.length; ++i) {
-      parentList.push(new Node(models.at(i), parentList));
+      parentList.push(new Node(models.at(i), parentList))
     }
 
     for (let i = 0; i < instances.length; ++i) {
-      parentList.push(new Node(instances.at(i), parentList));
+      parentList.push(new Node(instances.at(i), parentList))
     }
   }
 }

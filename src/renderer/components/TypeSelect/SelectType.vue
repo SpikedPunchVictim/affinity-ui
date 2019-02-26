@@ -32,10 +32,10 @@ import TypeDropdown from './TypeDropdown2'
 //let typeMap = typeDefs.typeMap
 
 
-import affinity from '../../services/affinity'
+import affinity from 'affinity'
 import Collection from './Collection'
 
-let types = affinity.aff.types
+let types = affinity.types
 
 let typeMap = {
    'bool': {
@@ -76,8 +76,6 @@ let typeMap = {
       }  
    }
 }
-
-
 
 export default {
    name: 'select-type',

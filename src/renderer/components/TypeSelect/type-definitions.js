@@ -1,7 +1,7 @@
-import affinity from '../../services/affinity'
+import affinity from '@/services/affinity'
 import Collection from './Collection'
 
-let types = affinity.aff.types
+let types = affinity.types
 
 let typeMap = {
    'bool': {

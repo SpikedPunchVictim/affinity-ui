@@ -68,7 +68,7 @@ function fill(project, depth = 3) {
 
 
 export default {
-   aff: Affinity,
+   affinity: Affinity,
    load: load,
    create: create,
    events: emitter,

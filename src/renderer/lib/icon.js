@@ -1,6 +1,5 @@
 import utils from '@/lib/utils'
 
-
 let iconMap = {
    namespace: {
       icon: 'folder',
