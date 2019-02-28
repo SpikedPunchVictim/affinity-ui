@@ -96,6 +96,7 @@
     display: block;
     transition: all 0.25s;
     font-family: monospace;
+    margin: 0 0 0 5px
 }
 
 .ProjectTreeView li.category.async>.item>.opener::after {
@@ -167,15 +168,15 @@
 <template>
    <div>
       <tree-view
-         class="ProjectTreeView"
          :model="model"
          :display="display"
          :css="css"
          :strategies="strategies"
          category="children"
-         :openerOpts="{ position: 'left' }"
          :onSelect="onSelect"
-         :selection="selection">
+         transition="transition"
+         :selection="selection"
+         :unique="unique">
       </tree-view>
    </div>
 </template>
@@ -194,16 +195,33 @@ export default {
       return {
          model: [],
          view: { name: '', children: [] },
-         selection: []
+         selection: [],
+         css: {
+            TreeView: "ProjectTreeView"
+         },
+         strategies: {
+            // Select on click
+            click: ["select"],
+            // Use keyboard modifiers
+            selection: ["modifiers"],
+            // Use the opener to control element folding
+            fold: ["opener-control"]
+         },
+         transition: {
+            attrs: { appear: true },
+            props: { name: "TreeViewDemoTransition" }
+         },
+         display: item => item.name,
+         unique: item => {
+            console.dir(item)
+            return item.item.qualifiedName
+         }
       }
    },
    mounted() {
       //this.refresh(this.project)
    },
    methods: {
-      display(obj) {
-         return obj.name
-      },
       onSelect(selected) {
          this.selected = selected
       },
@@ -216,16 +234,8 @@ export default {
 
          console.dir(this.model)
       },
-      css: {
-         TreeView: "ProjectTreeView"
-      },
-      strategies: {
-         // One item selected at a time
-         selection: ["single"],
-         // Select item on click
-         click: ["select", "unfold-on-selection"],
-         // Folds an item when itself or its children are not selected
-         fold: [ "not-selected", "no-child-selection" ]
+      onFolded(item, folded) {
+         console.dir(folded)
       }
    },
    computed: {

@@ -14,15 +14,15 @@ export const NodeType = {
 
 class Node {
   constructor(qualifiedObject, array) {
-    this.qualifiedObject = qualifiedObject
+    this.item = qualifiedObject
     this.array = array || []
     this.type = Node.getType(qualifiedObject)
-    this.qualifiedObject.on(Events.disposed, this._onDisposed)
+    this.item.on(Events.disposed, this._onDisposed)
     this.children = []
   }
 
   get name() {
-    return this.qualifiedObject.name
+    return this.item.name
   }
 
   _onDisposed() {
