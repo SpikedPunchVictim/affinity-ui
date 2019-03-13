@@ -55,9 +55,6 @@ export default {
          }
       }
    },
-   mounted: function() {
-      console.dir(this.object)
-   },
    components: {
       FieldView,
       'field-row': FieldRow

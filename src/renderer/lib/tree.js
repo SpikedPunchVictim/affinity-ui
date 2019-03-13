@@ -1,9 +1,3 @@
-//import utils from "@/lib/utils";
-//import { Events } from 'affinity'
-//import { Events, utils } from 'affinity'
-
-//const utils = require('./utils')
-const affinity = require('affinity')
 const { Events, utils } = require('affinity')
 
 export const NodeType = {
@@ -23,6 +17,10 @@ class Node {
 
   get name() {
     return this.item.name
+  }
+
+  get id() {
+    return `${this.type}_${this.item.qualifiedName}`
   }
 
   _onDisposed() {
@@ -51,7 +49,8 @@ class Node {
   }
 }
 
-export default class Tree {
+
+export class Tree {
   constructor(project) {
     this.project = project
     this.children = []
@@ -67,6 +66,10 @@ export default class Tree {
 
   get item() {
     return this.project.root
+  }
+
+  get id() {
+    return `_root`
   }
 
   populate() {

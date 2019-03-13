@@ -54,8 +54,6 @@ export default {
    },
    methods: {
       selectFolderEvent: function(onAccepted, onDeclined) {
-         console.dir(arguments)
-         console.dir(this.$refs)
          this.context = {
             accepted: onAccepted || (() => true),
             declined: onDeclined || (() => true)
@@ -65,9 +63,6 @@ export default {
       },
       folderSelected: function() {
          // File path is now available
-         console.log(`[SelectFile] ${this.$refs.selector.files.item(0)}`)
-         console.dir(this.$refs.selector)
-
          this.isInvisible = true
          if(this.$refs.selector.files[0] == null) {
             return

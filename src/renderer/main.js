@@ -11,6 +11,7 @@ Vue.config.productionTip = false
 import Icon from 'vue-awesome/components/Icon'
 Vue.component('icon', Icon)
 
+import 'vue-awesome/icons/beer'
 import 'vue-awesome/icons/search'
 import 'vue-awesome/icons/folder'
 import 'vue-awesome/icons/folder-open'

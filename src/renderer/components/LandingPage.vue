@@ -55,7 +55,7 @@
    <div>
       <vue-splitter :margin="5">
          <div slot="left-pane">
-            <!-- <project-namespace class="project" :project="getProject"></project-namespace> -->
+            <!-- <project-namespace class="project" :project="project"></project-namespace> -->
             <project-view :project="project"></project-view>
          </div>
          <div slot="right-pane">
@@ -69,7 +69,7 @@
 import VueSplitter from "@rmp135/vue-splitter"
 import SideBar from './SideBarView/SideBarView'
 import ProjectNamespaceView from './ProjectNamespaceView/ProjectNamespaceView'
-import ProjectView from './ProjectView/ProjectView'
+import ProjectView from '@/components/ProjectView/ProjectView'
 import DetailsView from './DetailsView'
 //import Affinity from '@/services/affinity'
 import { mapState, mapGetters, mapActions } from 'vuex'
