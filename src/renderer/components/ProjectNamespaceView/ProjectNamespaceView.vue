@@ -175,13 +175,16 @@ export default {
          'logInfo',
          'logError'
       ]),
+      log(msg) {
+         console.log(`[ProjectNamespaceView] ${msg}`)
+      },
       onSelected: function(obj) {
           if(!utils.isNamespace(obj)) {
               this.selectObject({ obj: obj, multiSelect: true })
           }
       },
       onSearch: function(val) {
-         console.log(val)
+         this.log(val)
       },
       onFilter: function(val) {
          this.search.filter[val] = !this.search.filter[val]

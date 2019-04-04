@@ -24,6 +24,9 @@ let iconMap = {
 function get(type) {
    let name = 'default'
 
+   console.log('Get Icon:')
+   console.dir(type)
+
    if(typeof type == 'string') {
       name = type.toLowerCase()
    } else {

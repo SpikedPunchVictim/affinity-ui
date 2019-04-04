@@ -1,134 +1,79 @@
-<style>
-  .tree-node {
-    /* flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; */
-    font-size: 14px;
-    padding-right: 8px;
-  }
-</style>
-
 <template>
    <div>
-      <el-tree
-         :data="model"
-         :props="defaultProps"
-         node-key="id"
-         highlight-current
-         @node-contextmenu="onContextMenu">
+      <!-- <div>
+         <el-input
+            class="search-style"
+            placeholder="Search"
+            v-model="search.query"
+            size="small">
+               <el-button slot="append" @click=""><icon name="search"></icon></el-button>
+         </el-input>
+      </div> -->
 
-         <span class="tree-node" slot-scope="{ node, data }">
-            <el-row :gutter="20">
-               <el-col :span="2"><icon :name="getIcon(data.item)"/></el-col>
-               <el-col :span="4">{{ node.label }}</el-col>
-
-               <el-col :span="4" :offset="6">
-                  <el-button
-                     type="text"
-                     size="mini"
-                     @click="() => append(data)">
-                     Append
-                  </el-button>
-               </el-col>
-
-               <el-col :span="4" :offset="6">
-                  <el-button
-                     type="text"
-                     size="mini"
-                     @click="() => append(data)">
-                     Append
-                  </el-button>
-               </el-col>
-            </el-row>
-
-            <!-- <span><icon :name="getIcon(node.item)"></icon></span>
-            <span>{{ node.label }}</span>
-            <span>
-               <el-button
-                  type="text"
-                  size="mini"
-                  @click="() => append(data)">
-                  Append
-               </el-button>
-               <el-button
-                  type="text"
-                  size="mini"
-                  @click="() => remove(node, data)">
-                  Delete
-               </el-button>
-            </span> -->
-         </span>
-      </el-tree>
+      <project-tree :namespace="root" @node-selected="onTreeNodeSelected"></project-tree>
    </div>
 </template>
 
+
 <script>
-import { NodeType, Tree } from '@/lib/tree'
+import { mapGetters } from 'vuex'
+import ProjectTree from '@/components/ProjectView/ProjectTree'
 import utils from '@/lib/utils'
-import icon from '@/lib/icon'
-import { mapActions, mapGetters } from 'vuex'
 
 export default {
    name: 'project-view',
+   props: {
+      project: Object
+   },
    data() {
       return {
-         model: [],
-         view: { name: '', children: [] },
-         selection: [],
-         defaultProps: {
-            children: 'children',
-            label: 'name',
-            isLeaf: (node, data) => {
-               return node.type !== NodeType.Namespace
-            }
-        }
+         namespace: null,
+         search: {
+            query: '',
+            filter: {
+               namespace: true,
+               model: true,
+               instance: true   
+            },
+            typeOptions: [
+               {
+                  label: 'Namespace'
+               }
+            ]
+         }
       }
    },
-   mounted: function() {
-      this.refresh(this.project)
+   created: function() {
+      this.log(`created project: ${this.project}`)
+      this.namespace = this.project.root
    },
    methods: {
-      ...mapActions([
-         'selectObject'
-      ]),
-      onSelect(selected) {
+      onSearch() {
+         this.log('click')
+      },
+      log(msg) {
+         console.log(`[ProjectView] ${msg}`)
+      },
+      onTreeNodeSelected(selected) {
          if(!utils.isNamespace(selected)) {
-              this.selectObject({ obj: selected, multiSelect: true })
-          }
-         
-         this.selected = selected
-      },
-      refresh(project) {
-         if(project == null) {
-            return
+            this.selectObject({ obj: selected, multiSelect: true })
          }
-
-         this.model = (new Tree(project)).populate()
-      },
-      getIcon: function(type) {
-         console.log(`Icon Type: ${type}`)
-         return icon.get(type).icon
-      },
-      onContextMenu: function(event, node, prop, treeNode) {
-         console.dir(event)
-         console.dir(node)
-         console.dir(prop)
-         console.dir(treeNode)
-      },
-      onFolded(item, folded) {
-         console.dir(folded)
       }
    },
    computed: {
-      ...mapGetters([
-         'project'
-      ])
+      root() {
+         return this.project ? this.project._root : null
+      }
    },
    watch: {
       project: function(newProj, oldProj) {
-         this.refresh(newProj)
+         this.log(`Setting new namespace`)
+         this.namespace = newProj.root
       }
+   },
+   components: {
+      'project-tree': ProjectTree
    }
 }
+
 </script>

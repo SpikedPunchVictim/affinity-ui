@@ -126,7 +126,7 @@
                   resizable
                   width="85">
                   <template slot-scope="scope">
-                    {{ getTypeName(scope) }}
+                    {{ getTypeName(scope.row) }}
                      <!-- <el-tooltip placement="top-start" :openDelay="1000">
                         <div slot="content"><el-tag type="primary">{{ getTypeName(scope.row.type) }}</el-tag></div>
                         <el-tag type="primary">{{ getTypeName(scope.row.type) }}</el-tag>
@@ -165,13 +165,13 @@
          </el-col>
       </el-row>
 
-      <el-row>
+      <!-- <el-row>
          <el-col>
             <div v-for="member in getMembers">
                {{member.name}}
             </div>
          </el-col>
-      </el-row>
+      </el-row> -->
 
       <create-member
          :show="isAddingMember"
@@ -220,10 +220,10 @@ export default {
       isEditorMultiLine: function(type) {
          return valueEditors.getEditor(type).isMultiLine
       },
-      getTypeName: function(type) {
-        console.dir(type)
-         console.log(`[MemberView] getTypeName: ${type.toString()}`)
-         return type.toString()
+      getTypeName: function(member) {
+        console.dir(member)
+         console.log(`[MemberView] getTypeName: ${member.type.toString()}`)
+         return member.type.toString()
       },
       toggleEditor: function(name) {
          let index = this.visibleEditors.indexOf(name)

@@ -56,6 +56,7 @@
       <vue-splitter :margin="5">
          <div slot="left-pane">
             <!-- <project-namespace class="project" :project="project"></project-namespace> -->
+            <div>Project:</div>
             <project-view :project="project"></project-view>
          </div>
          <div slot="right-pane">
@@ -86,7 +87,9 @@ export default {
       // if (this.project == null) {
       //    this.createProject()
       // }
-      events.main.on('project.populate', _ => {
+      console.dir(this.project, { depth: null })
+
+      events.renderer.on('project.populate', _ => {
          this.populateProject()
       })
    },
@@ -94,7 +97,10 @@ export default {
       ...mapActions([
          'createProject',
          'populateProject'
-      ])
+      ]),
+      log(msg) {
+         console.log(`[LandingPage] ${msg}`)
+      }
    },
    computed: {
       ...mapGetters([
@@ -103,9 +109,14 @@ export default {
       ...mapState({
          selected: state => state.selected.selected,
       }),
-      getProject: function() {
+      // project: function() {
+      //    this.log('Affinity:')
+      //    console.dir(this.$store.state.affinity)
+      //    return this.$store.state.affinity.project
+      // },
+      getRoot: function() {
          //return this.project
-         return this.$store.state.affinity.project
+         return this.$store.state.affinity.project.root
       },
       hasProject: function() {
          return this.project != null

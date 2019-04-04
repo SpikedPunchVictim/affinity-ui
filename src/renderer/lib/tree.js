@@ -6,6 +6,67 @@ export const NodeType = {
   Namespace: "namespace"
 }
 
+/*
+
+      name: "Root",
+      type: NodeType.Namespace,
+      item: null,
+      id: "_root",
+      children: []
+
+*/
+
+let NamespaceHandler = {
+  get: function(target, prop, proxy) {
+    switch(prop) {
+      case 'name': { return target.name }
+      case 'type': { return NodeType.Namespace }
+      case 'item': { return target }
+      case 'id': { return `namespace_${target.qualifiedName}` }
+      case 'children': { return target.children._items }
+    }
+  }
+}
+
+let ModelHandler = {
+  get: function(target, prop, proxy) {
+    switch(prop) {
+      case 'name': { return target.name }
+      case 'type': { return NodeType.Model }
+      case 'item': { return target }
+      case 'id': { return `model_${target.qualifiedName}` }
+      case 'children': { return [] }
+    }
+  }
+}
+
+let InstanceHandler = {
+  get: function(target, prop, proxy) {
+    switch(prop) {
+      case 'name': { return target.name }
+      case 'type': { return NodeType.Instance }
+      case 'item': { return target }
+      case 'id': { return `instance_${target.qualifiedName}` }
+      case 'children': { return [] }
+    }
+  }
+}
+
+
+function createChild(item) {
+  let handler = {}
+  
+  if(utils.isNamespace(item)) {
+    handler = NamespaceHandler
+  } else if(utils.isModel(item)) {
+    handler = ModelHandler
+  } else if(utils.isInstance(item)) {
+    handler = InstanceHandler
+  }
+
+  return new Proxy(item, handler)
+}
+
 class Node {
   constructor(qualifiedObject, array) {
     this.item = qualifiedObject
@@ -51,9 +112,19 @@ class Node {
 
 
 export class Tree {
-  constructor(project) {
-    this.project = project
+  constructor(namespace) {
+    this.namespace = namespace
     this.children = []
+  }
+
+  static empty() {
+    return [{
+      name: "Root",
+      type: NodeType.Namespace,
+      item: null,
+      id: "_root",
+      children: []
+    }]
   }
 
   get name() {
@@ -65,7 +136,7 @@ export class Tree {
   }
 
   get item() {
-    return this.project.root
+    return this.namespace
   }
 
   get id() {
@@ -73,13 +144,15 @@ export class Tree {
   }
 
   populate() {
-    this.createChildren(this.project.root, this.children)
-    return [{
-      name: this.name,
-      type: this.type,
-      item: this.item,
-      children: this.children
-    }]
+    let root = createChild(this.item)
+    this.createChildren(this.namespace, root.children)
+    return [root]
+    // return [{
+    //   name: this.name,
+    //   type: this.type,
+    //   item: this.item,
+    //   children: this.children
+    // }]
   }
 
   createChildren(namespace, parentList) {
@@ -87,17 +160,20 @@ export class Tree {
 
     for (let i = 0; i < children.length; ++i) {
       let current = children.at(i)
-      let node = new Node(current, parentList)
+      //let node = new Node(current, parentList)
+      let node = createChild(current)
       parentList.push(node)
       this.createChildren(current, node.children)
     }
 
     for (let i = 0; i < models.length; ++i) {
-      parentList.push(new Node(models.at(i), parentList))
+      //parentList.push(new Node(models.at(i), parentList))
+      parentList.push(createChild(models.at(i)))
     }
 
     for (let i = 0; i < instances.length; ++i) {
-      parentList.push(new Node(instances.at(i), parentList))
+      // parentList.push(new Node(instances.at(i), parentList))
+      parentList.push(createChild(instances.at(i)))
     }
   }
 }
