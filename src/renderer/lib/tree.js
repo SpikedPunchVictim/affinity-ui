@@ -1,4 +1,5 @@
-const { Events, utils } = require('affinity')
+const { EventEmitter } = require('events')
+const { Events, utils, ObservableCollection } = require('affinity')
 
 export const NodeType = {
   Instance: "instance",
@@ -16,97 +17,164 @@ export const NodeType = {
 
 */
 
-let NamespaceHandler = {
-  get: function(target, prop, proxy) {
-    switch(prop) {
-      case 'name': { return target.name }
-      case 'type': { return NodeType.Namespace }
-      case 'item': { return target }
-      case 'id': { return `namespace_${target.qualifiedName}` }
-      case 'children': { return target.children._items }
-    }
-  }
-}
-
-let ModelHandler = {
-  get: function(target, prop, proxy) {
-    switch(prop) {
-      case 'name': { return target.name }
-      case 'type': { return NodeType.Model }
-      case 'item': { return target }
-      case 'id': { return `model_${target.qualifiedName}` }
-      case 'children': { return [] }
-    }
-  }
-}
-
-let InstanceHandler = {
-  get: function(target, prop, proxy) {
-    switch(prop) {
-      case 'name': { return target.name }
-      case 'type': { return NodeType.Instance }
-      case 'item': { return target }
-      case 'id': { return `instance_${target.qualifiedName}` }
-      case 'children': { return [] }
-    }
+function typeswitch(item, onNamespace, onModel, onInstance, onUnsupported) {
+  if (utils.isNamespace(item)) {
+    return onNamespace()
+  } else if (utils.isModel(item)) {
+    return onModel()
+  } else if (utils.isInstance(item)) {
+    return onInstance()
+  } else {
+    return onUnsupported()
   }
 }
 
 
-function createChild(item) {
-  let handler = {}
-  
-  if(utils.isNamespace(item)) {
-    handler = NamespaceHandler
-  } else if(utils.isModel(item)) {
-    handler = ModelHandler
-  } else if(utils.isInstance(item)) {
-    handler = InstanceHandler
-  }
-
-  return new Proxy(item, handler)
-}
-
-class Node {
-  constructor(qualifiedObject, array) {
+class Node extends EventEmitter {
+  constructor(qualifiedObject) {
+    super()
     this.item = qualifiedObject
-    this.array = array || []
-    this.type = Node.getType(qualifiedObject)
-    this.item.on(Events.disposed, this._onDisposed)
+    this.item.on(Events.disposed, _ => this.emit('disposed', { item: this.item }))
     this.children = []
   }
 
   get name() {
+    if(utils.isNamespace(this.item) && this.item.name === '') {
+      return 'Root'
+    } 
+
     return this.item.name
+  }
+
+  get type() {
+    return typeswitch(this.item,
+      _ => NodeType.Namespace,
+      _ => NodeType.Model,
+      _ => NodeType.Instance,
+      _ => { throw new Error("Unsupported Qualified Object Type for Tree.") }
+    )
+  }
+
+  /**
+   * Gets the priority when ordering the Qualified items in the Tree
+   * 
+   * @param {QualifiedObject} qualifiedObject 
+   */
+  static priority(qualifiedObject) {
+    return typeswitch(qualifiedObject,
+      _ => 1,
+      _ => 2,
+      _ => 3,
+      _ => 4)
   }
 
   get id() {
     return `${this.type}_${this.item.qualifiedName}`
   }
 
-  _onDisposed() {
-    let found = this.array.indexOf(this)
+  populate(options) {
+    if(!utils.isNamespace(this.item)) {
+      return
+    }
+
+    options = options || {}
+    options.depth = options.depth || -1
+
+    this.children.splice(0, this.children.length)
+
+    let addNode = qualifiedObject => {
+      let node = new Node(qualifiedObject)
+      node.on('disposed', obj => this._onDisposed(obj.item))
+      this.children.push(node)
+    }
+
+    // let addNamespace = nspace => {
+    //   console.log(`[tree.js] Adding Namespace ${nspace.qualifiedName}`)
+    //   let node = new Node(nspace)
+    //   node.on('disposed', obj => this._onDisposed(obj.item))
+    //   this.children.push(node)
+    // }
+
+    // let addModel = model => {
+    //   console.log(`[tree.js] Adding Model ${model.qualifiedName}`)
+
+    //   let node = new Node(model)
+    //   this.children.push(node)
+    //   node.on('disposed', obj => this._onDisposed(obj.item))
+    // }
+
+    // let addInstance = instance => {
+    //   console.log(`[tree.js] Adding instance ${instance.qualifiedName}`)
+
+    //   let node = new Node(instance)
+    //   this.children.push(node)
+    //   node.on('disposed', obj => this._onDisposed(obj.item))
+    // }
+
+    let { children, models, instances } = this.item
+
+    children.on(Events.namespaceCollection.added, items => items.forEach(obj => addNode(obj.item)))
+    models.on(Events.modelCollection.added, items => items.forEach(obj => addNode(obj.item)))
+    instances.on(Events.instanceCollection.added, items => items.forEach(obj => addNode(obj.item)))
+
+    children.forEach(nspace => {
+      addNode(nspace)
+
+      if(options.depth < 0 || options.depth > 0) {
+        let tempOpts = options
+        
+        if(tempOpts.depth > 0) {
+          tempOpts.depth -= 1
+        }
+
+        node.populate(tempOpts)
+      }
+    })
+
+    models.forEach(model => addModel(model))
+    instances.forEach(instance => addInstance(instance))
+  }
+
+  _onDisposed(obj) {
+    let found = this.children.find(it => it.item === obj)
 
     if (found) {
-      this.array.splice(found, 1)
+      this.children.splice(found, 1)
     }
   }
 
-  static getType(qualifiedObject) {
-    if (utils.isNamespace(qualifiedObject)) {
-      return NodeType.Namespace
+  /**
+   * Determines the index at which the node should be inserted
+   * into the tree for proper ordering
+   * 
+   * @param {Node} node 
+   */
+  getSortedIndex(node) {
+    let priority = Node.priority(node.item)
+
+    for(let i = 0; i < this.children.length; ++i) {
+      let currentNode = this.children[i]
+      let currentPriority = Node.priority(currentNode.item)
+
+      if(currentPriority > priority) {
+        return i
+      }
     }
 
-    if (utils.isModel(qualifiedObject)) {
-      return NodeType.Model
-    }
 
-    if (utils.isInstance(qualifiedObject)) {
-      return NodeType.Instance
-    }
+    return typeswitch(node.item,
+      _ => {
+        return this.children.findIndex(n => {
 
-    console.dir(qualifiedObject)
-    throw new Error("Unsupported Qualified Object Type for Tree.")
+        })
+      },
+      _ => {
+
+      },
+      _ => {
+
+      }
+    )
   }
 }
 
@@ -143,37 +211,31 @@ export class Tree {
     return `_root`
   }
 
-  populate() {
-    let root = createChild(this.item)
-    this.createChildren(this.namespace, root.children)
+  populate(options) {
+    let root = new Node(this.item)
+    root.populate(options)
     return [root]
-    // return [{
-    //   name: this.name,
-    //   type: this.type,
-    //   item: this.item,
-    //   children: this.children
-    // }]
   }
 
-  createChildren(namespace, parentList) {
-    let { children, models, instances } = namespace
+  // createChildren(namespace, parentList) {
+  //   let { children, models, instances } = namespace
 
-    for (let i = 0; i < children.length; ++i) {
-      let current = children.at(i)
-      //let node = new Node(current, parentList)
-      let node = createChild(current)
-      parentList.push(node)
-      this.createChildren(current, node.children)
-    }
+  //   for (let i = 0; i < children.length; ++i) {
+  //     let current = children.at(i)
+  //     //let node = new Node(current, parentList)
+  //     let node = createProxy(current)
+  //     parentList.push(node)
+  //     this.createChildren(current, node.children)
+  //   }
 
-    for (let i = 0; i < models.length; ++i) {
-      //parentList.push(new Node(models.at(i), parentList))
-      parentList.push(createChild(models.at(i)))
-    }
+  //   for (let i = 0; i < models.length; ++i) {
+  //     //parentList.push(new Node(models.at(i), parentList))
+  //     parentList.push(createProxy(models.at(i)))
+  //   }
 
-    for (let i = 0; i < instances.length; ++i) {
-      // parentList.push(new Node(instances.at(i), parentList))
-      parentList.push(createChild(instances.at(i)))
-    }
-  }
+  //   for (let i = 0; i < instances.length; ++i) {
+  //     // parentList.push(new Node(instances.at(i), parentList))
+  //     parentList.push(createProxy(instances.at(i)))
+  //   }
+  // }
 }
