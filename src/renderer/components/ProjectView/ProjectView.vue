@@ -10,6 +10,7 @@
          </el-input>
       </div> -->
 
+      <project-search></project-search>
       <project-tree :namespace="root" @node-selected="onTreeNodeSelected"></project-tree>
    </div>
 </template>
@@ -18,6 +19,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import ProjectTree from '@/components/ProjectView/ProjectTree'
+import ProjectSearch from '@/components/ProjectView/ProjectSearch'
 import utils from '@/lib/utils'
 
 export default {
@@ -72,7 +74,8 @@ export default {
       }
    },
    components: {
-      'project-tree': ProjectTree
+      'project-tree': ProjectTree,
+      'project-search': ProjectSearch
    }
 }
 

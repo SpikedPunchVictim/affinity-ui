@@ -9,7 +9,8 @@
    }
 
    .tree-label {
-      margin-left: 5px
+      margin-left: 5px;
+      color: #000000
    }
 
    .el-tree-node__content:hover {
@@ -29,7 +30,7 @@
          @node-contextmenu="onContextMenu">
 
          <span class="tree-node el-tree-node__content" slot-scope="{ node, data }">
-            <span><icon :name="getIcon(data.item)"></icon></span>
+            <span><icon color="rgb(69, 69, 69)" :name="getIcon(data.item)"></icon></span>
             <span class="tree-label">{{ node.label }}</span>
             <!-- <span>
                <el-button

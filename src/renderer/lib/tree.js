@@ -1,5 +1,6 @@
 const { EventEmitter } = require('events')
 const { Events, utils, ObservableCollection } = require('affinity')
+const { compare} = require('natural-orderby')
 
 export const NodeType = {
   Instance: "instance",
@@ -34,16 +35,10 @@ class Node extends EventEmitter {
   constructor(qualifiedObject) {
     super()
     this.item = qualifiedObject
+    this._updateName(qualifiedObject)
     this.item.on(Events.disposed, _ => this.emit('disposed', { item: this.item }))
+    this.item.on(Events.nameChanged, _ => this._updateName(this.item))
     this.children = []
-  }
-
-  get name() {
-    if(utils.isNamespace(this.item) && this.item.name === '') {
-      return 'Root'
-    } 
-
-    return this.item.name
   }
 
   get type() {
@@ -62,10 +57,10 @@ class Node extends EventEmitter {
    */
   static priority(qualifiedObject) {
     return typeswitch(qualifiedObject,
-      _ => 1,
-      _ => 2,
-      _ => 3,
-      _ => 4)
+      _ => 3, // Namespace
+      _ => 2, // Model
+      _ => 1, // Instance
+      _ => 0)
   }
 
   get id() {
@@ -85,37 +80,22 @@ class Node extends EventEmitter {
     let addNode = qualifiedObject => {
       let node = new Node(qualifiedObject)
       node.on('disposed', obj => this._onDisposed(obj.item))
-      this.children.push(node)
+      
+      let sortedIndex = this.getSortedIndex(node)
+      this.children.splice(sortedIndex, 0, node)
     }
-
-    // let addNamespace = nspace => {
-    //   console.log(`[tree.js] Adding Namespace ${nspace.qualifiedName}`)
-    //   let node = new Node(nspace)
-    //   node.on('disposed', obj => this._onDisposed(obj.item))
-    //   this.children.push(node)
-    // }
-
-    // let addModel = model => {
-    //   console.log(`[tree.js] Adding Model ${model.qualifiedName}`)
-
-    //   let node = new Node(model)
-    //   this.children.push(node)
-    //   node.on('disposed', obj => this._onDisposed(obj.item))
-    // }
-
-    // let addInstance = instance => {
-    //   console.log(`[tree.js] Adding instance ${instance.qualifiedName}`)
-
-    //   let node = new Node(instance)
-    //   this.children.push(node)
-    //   node.on('disposed', obj => this._onDisposed(obj.item))
-    // }
 
     let { children, models, instances } = this.item
 
-    children.on(Events.namespaceCollection.added, items => items.forEach(obj => addNode(obj.item)))
-    models.on(Events.modelCollection.added, items => items.forEach(obj => addNode(obj.item)))
-    instances.on(Events.instanceCollection.added, items => items.forEach(obj => addNode(obj.item)))
+    let test = items => { console.dir(items); items.forEach(obj => addNode(obj.item)); }
+
+    this.item.on(Events.namespace.childAdded, test /*items => items.forEach(obj => addNode(obj.item))*/)
+    this.item.on(Events.namespace.modelAdded, items => items.forEach(obj => addNode(obj.item)))
+    this.item.on(Events.namespace.instanceAdded, items => items.forEach(obj => addNode(obj.item)))
+
+    //children.on(Events.namespaceCollection.added, items => items.forEach(obj => addNode(obj.item)))
+    // models.on(Events.modelCollection.added, items => items.forEach(obj => addNode(obj.item)))
+    // instances.on(Events.instanceCollection.added, items => items.forEach(obj => addNode(obj.item)))
 
     children.forEach(nspace => {
       addNode(nspace)
@@ -135,6 +115,41 @@ class Node extends EventEmitter {
     instances.forEach(instance => addInstance(instance))
   }
 
+  /**
+   * Determines the index at which the node should be inserted
+   * into the child collection for proper ordering
+   * 
+   * @param {Node} node 
+   */
+  getSortedIndex(node) {
+    if(this.children.length == 0) {
+      return 0
+    }
+
+    let nodePriority = Node.priority(node.item)
+
+    for(let i = 0; i < this.children.length; ++i) {
+      let current = this.children[i]
+      let currentPriority = Node.priority(current.item)
+
+      if(nodePriority > currentPriority) {
+        return i
+      }
+
+      if(nodePriority == currentPriority) {
+        let compareResult = compare()(node.item.name, current.item.name)
+
+        if(compareResult >= 0) {
+          continue
+        } else {
+          return i
+        }
+      }
+    }
+
+    return this.children.length
+  }
+
   _onDisposed(obj) {
     let found = this.children.find(it => it.item === obj)
 
@@ -143,38 +158,14 @@ class Node extends EventEmitter {
     }
   }
 
-  /**
-   * Determines the index at which the node should be inserted
-   * into the tree for proper ordering
-   * 
-   * @param {Node} node 
-   */
-  getSortedIndex(node) {
-    let priority = Node.priority(node.item)
+  _updateName(obj) {
+    if(utils.isNamespace(obj) && obj.name === '') {
+      this.name = 'Root'
+      return
+    } 
 
-    for(let i = 0; i < this.children.length; ++i) {
-      let currentNode = this.children[i]
-      let currentPriority = Node.priority(currentNode.item)
-
-      if(currentPriority > priority) {
-        return i
-      }
-    }
-
-
-    return typeswitch(node.item,
-      _ => {
-        return this.children.findIndex(n => {
-
-        })
-      },
-      _ => {
-
-      },
-      _ => {
-
-      }
-    )
+    this.name = obj.name
+    this.emit('name-changed', { item: obj })
   }
 }
 
