@@ -16,11 +16,11 @@
             slot="prepend"
             :value="select"
             ref="select"
-            style="width: 100px;"
+            style="width: 40px;"
             multiple
             @change="onFilterAdd"
             @remove-tag="onFilterRemove" 
-            placeholder="Filter By">
+            placeholder="">
                <el-option label="Namespace" value="Namespace"></el-option>
                <el-option label="Model" value="Model"></el-option>
                <el-option label="Instance" value="Instance"></el-option>

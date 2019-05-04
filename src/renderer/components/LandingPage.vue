@@ -56,7 +56,6 @@
       <vue-splitter :margin="5">
          <div slot="left-pane">
             <!-- <project-namespace class="project" :project="project"></project-namespace> -->
-            <div>Project:</div>
             <project-view :project="project"></project-view>
          </div>
          <div slot="right-pane">

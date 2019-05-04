@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { NodeType, Tree } from '@/lib/tree'
+import { NodeType, Tree } from '@/lib/ProjectTree'
 import icon from '@/lib/icon'
 import { mapActions, mapGetters } from 'vuex'
 import { ipcRenderer } from 'electron'

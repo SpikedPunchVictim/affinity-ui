@@ -121,19 +121,19 @@
                   width="33"
                   align="center">
                </el-table-column>
-               <el-table-column
+               <!-- <el-table-column
                   label="Type"
                   resizable
                   width="85">
                   <template slot-scope="scope">
                     {{ getTypeName(scope.row) }}
-                     <!-- <el-tooltip placement="top-start" :openDelay="1000">
+                     <el-tooltip placement="top-start" :openDelay="1000">
                         <div slot="content"><el-tag type="primary">{{ getTypeName(scope.row.type) }}</el-tag></div>
                         <el-tag type="primary">{{ getTypeName(scope.row.type) }}</el-tag>
-                     </el-tooltip> -->
+                     </el-tooltip>
                   </template>
-               </el-table-column>
-               <!-- <el-table-column
+               </el-table-column> -->
+               <el-table-column
                   label="Name"
                   width="140">
                   <template slot-scope="data">
@@ -159,7 +159,7 @@
                   <template slot-scope="data">
                      <el-button size="small" type="primary" icon="delete" @click="removeMember(data.row)"></el-button>
                   </template>
-               </el-table-column> -->
+               </el-table-column>
                <h3 slot="empty"></h3>
             </el-table>
          </el-col>

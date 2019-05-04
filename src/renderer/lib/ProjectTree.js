@@ -207,26 +207,4 @@ export class Tree {
     root.populate(options)
     return [root]
   }
-
-  // createChildren(namespace, parentList) {
-  //   let { children, models, instances } = namespace
-
-  //   for (let i = 0; i < children.length; ++i) {
-  //     let current = children.at(i)
-  //     //let node = new Node(current, parentList)
-  //     let node = createProxy(current)
-  //     parentList.push(node)
-  //     this.createChildren(current, node.children)
-  //   }
-
-  //   for (let i = 0; i < models.length; ++i) {
-  //     //parentList.push(new Node(models.at(i), parentList))
-  //     parentList.push(createProxy(models.at(i)))
-  //   }
-
-  //   for (let i = 0; i < instances.length; ++i) {
-  //     // parentList.push(new Node(instances.at(i), parentList))
-  //     parentList.push(createProxy(instances.at(i)))
-  //   }
-  // }
 }

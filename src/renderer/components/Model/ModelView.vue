@@ -58,18 +58,19 @@
          </el-col>
       </el-row>
 
-      <create-member
+      <!-- <create-member
          :show="isAddingMember"
          v-on:cancel="isAddingMember = false"
          v-on:create="isAddingMember = false"
          @accept="isAddingMember = false"
          :model="object">
-      </create-member>
+      </create-member> -->
    </div>
 </template>
 
 <script>
-import MembersView from '@/components/Model/MemberView'
+//import MembersView from '@/components/Model/MemberView'
+import MembersView from '@/components/Model/MemberTreeView'
 //import MembersView from '@/components/Model/DraggableMemberView'
 import CreateMember from '@/components/Modals/CreateMember2'
 import utils from '@/lib/utils' 
