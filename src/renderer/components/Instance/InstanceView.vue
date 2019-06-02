@@ -8,7 +8,7 @@
 }
 
 .field-label {
-   text-align: right;
+   text-align: left;
    padding-right: 5px;
    
    position: relative;
@@ -25,7 +25,7 @@
 
 <template>
    <div>
-      <el-row type="flex" justify="space-between">
+      <el-row type="flex" justify="start">
          <el-col :span="5" class="field-label">Name</el-col>
          <el-col :span="19"><el-input v-model="form.name" placeholder="Name" size="small"></el-input></el-col>
       </el-row>

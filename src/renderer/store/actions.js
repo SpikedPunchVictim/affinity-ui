@@ -48,7 +48,7 @@ export const setLastSavePath = ({ commit }, directory) => {
 
 /*
 * A generic update value function
-* update: function(value)
+* update: function(value) : Promise
 */
 export const updateValue = ({ dispatch, commit, state }, { value, update }) => {
   commit(types.UPDATE_VALUE, value, update)

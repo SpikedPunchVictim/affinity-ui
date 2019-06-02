@@ -22,6 +22,32 @@ function isInstance(obj) {
    return obj instanceof Instance
 }
 
+/**
+ * Utility function to define logic based on the source type
+ * 
+ * Example usage:
+ *    typeSwitch(model, {
+ *       namespace(): {
+ *          //...
+ *       }
+ *       model() {
+ *          //...
+ *       },
+ *       instance(): {
+ *          //...
+ *       },
+ *       default(): {
+ *          //...
+ *       }
+ *    })
+ * 
+ * @param {object} obj 
+ * @param {object} actions Object that contains parameterless functions for:
+ *    - namespace {function()}
+ *    - model {function()}
+ *    - instance {function()}
+ *    - default {function()}
+ */
 function typeSwitch(obj, actions) {
    if(isNamespace(obj) && actions.namespace != null) {
       return actions.namespace()

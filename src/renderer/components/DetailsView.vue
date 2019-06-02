@@ -22,7 +22,7 @@
          closable
          @tab-remove="closeTab">
          <el-tab-pane
-            v-for="(obj, index) in tabs"
+            v-for="(obj) in tabs"
             :label="obj.name"
             v-bind:key="obj.qualifiedName"
             :name="obj.qualifiedName">

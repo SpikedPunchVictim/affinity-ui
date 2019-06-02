@@ -30,6 +30,7 @@
     "affinity": "file:../affinity/affinity-0.0.9.tgz",
     "affinity-xml": "file:../affinity-xml/affinity-xml-1.0.1.tgz",
     "natural-orderby": "^2.0.3",
+    "splitpanes": "^1.14.2",
     "vue": "^2.5.16",
     "vue-awesome": "^3.3.1",
     "vue-electron": "^1.0.6",

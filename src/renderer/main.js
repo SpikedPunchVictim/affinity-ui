@@ -18,6 +18,9 @@ import 'vue-awesome/icons/folder-open'
 import 'vue-awesome/icons/file'
 import 'vue-awesome/icons/file-alt'
 
+// Splitpanes
+import 'splitpanes/dist/splitpanes.css'
+
 // Element UI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'

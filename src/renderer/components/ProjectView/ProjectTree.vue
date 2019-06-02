@@ -77,7 +77,6 @@ export default {
       }
    },
    mounted: function() {
-      this.log(`namespace: ${this.namespace}`)
       this.refresh(this.namespace)
    },
    methods: {
@@ -97,7 +96,7 @@ export default {
             return
          }
 
-         this.model = (new Tree(namespace)).populate()
+         this.model = (new Tree(namespace)).populate({ depth: -1 })
 
          this.log('refreshed values:')
          console.dir(this.model, { depth: null })

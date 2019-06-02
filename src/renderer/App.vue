@@ -50,41 +50,48 @@
 </template>
 
 <script>
-   import store from '@/store'
-   import events from '@/services/events'
-   //import FileSystemService from './components/FileSystem/FileSystemService'
+import store from '@/store'
+import events from '@/services/events'
+//import FileSystemService from './components/FileSystem/FileSystemService'
+import { mapActions } from 'vuex'
 
-   export default {
-      data() {
-         return {
-            emitter: events,
-            loadingProject: false
-         }
-      },
-      mounted: function() {
-         events.on('message', (type, message) => {
-            // types: success, error, info, warning
-            this.$message({ type: type, messaage: message })
-         })
 
-         events.on('project.open.start', _ => this.loadingProject = true)
-         events.on('project.open.success', _ => this.loadingProject = false)
-         events.on('project.open.failed', err => {
-            this.loadingProject = false
-            this.$message({
-               type: 'error',
-               message: `Failed to load project. Reason:\n${err}`
-            })
+export default {
+   data() {
+      return {
+         emitter: events,
+         loadingProject: false
+      }
+   },
+   mounted: function() {
+      console.log(`[App.vue : mounted] ${events}`)
+      
+      events.on('message', (type, message) => {
+         // types: success, error, info, warning
+         this.$message({ type: type, messaage: message })
+      })
+
+      events.on('project.open.start', _ => this.loadingProject = true)
+      events.on('project.open.success', _ => this.loadingProject = false)
+      events.on('project.open.failed', err => {
+         this.loadingProject = false
+         this.$message({
+            type: 'error',
+            message: `Failed to load project. Reason:\n${err}`
          })
-      },
-      methods: {
-         saveFile: function() {
-            this.emitter.emit('project.open')
-         }
-      },
-      store,
-      // components: {
-      //    'file-system-service': FileSystemService
-      // }
-   }
+      })
+   },
+   methods: {
+      ...mapActions([
+         'populateProject'
+      ]),
+      saveFile: function() {
+         this.emitter.emit('project.open')
+      }
+   },
+   store,
+   // components: {
+   //    'file-system-service': FileSystemService
+   // }
+}
 </script>

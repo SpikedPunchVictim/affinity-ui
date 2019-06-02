@@ -100,7 +100,6 @@
             <el-table
                v-show="model.members.length > 0"
                class="table-style"
-               border
                fit
                :data="model.members._items"
                :show-header="false"

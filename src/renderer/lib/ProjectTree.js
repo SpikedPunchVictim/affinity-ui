@@ -83,6 +83,7 @@ class Node extends EventEmitter {
       
       let sortedIndex = this.getSortedIndex(node)
       this.children.splice(sortedIndex, 0, node)
+      return node
     }
 
     let { children, models, instances } = this.item
@@ -98,7 +99,7 @@ class Node extends EventEmitter {
     // instances.on(Events.instanceCollection.added, items => items.forEach(obj => addNode(obj.item)))
 
     children.forEach(nspace => {
-      addNode(nspace)
+      let node = addNode(nspace)
 
       if(options.depth < 0 || options.depth > 0) {
         let tempOpts = options
@@ -111,8 +112,8 @@ class Node extends EventEmitter {
       }
     })
 
-    models.forEach(model => addModel(model))
-    instances.forEach(instance => addInstance(instance))
+    models.forEach(model => addNode(model))
+    instances.forEach(instance => addNode(instance))
   }
 
   /**

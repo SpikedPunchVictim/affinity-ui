@@ -44,8 +44,11 @@
 <template>
    <div>
       <el-row type="flex" justify="space-between">
-         <el-col :span="5" class="field-label">Name</el-col>
-         <el-col :span="19"><el-input v-model="object.name" placeholder="Name" size="small"></el-input></el-col>
+         <el-col :span="24">
+            <el-input v-model="form.name" placeholder="Name" size="small">
+                  <template slot="prepend">Name</template>
+            </el-input>
+         </el-col>
       </el-row>
       <!-- <el-row type="flex" justify="space-between" class="meta-form">
          <el-col :span="5" class="field-label">Static Name</el-col>
@@ -69,8 +72,9 @@
 </template>
 
 <script>
-//import MembersView from '@/components/Model/MemberView'
-import MembersView from '@/components/Model/MemberTreeView'
+//import MembersView from '@/components/Model/MemberTableView'
+//import MembersView from '@/components/Model/MemberTreeView'
+import MembersView from '@/components/Model/MemberListView'
 //import MembersView from '@/components/Model/DraggableMemberView'
 import CreateMember from '@/components/Modals/CreateMember2'
 import utils from '@/lib/utils' 
@@ -122,6 +126,9 @@ export default {
       model: function() {
          this.form.name = this.object.name
          this.form.static = this.object.qualifiedName
+      },
+      'form.name': function(newVal, oldVal) {
+         this.object.name = newVal
       }
    }
 }

@@ -8,16 +8,6 @@
 
 <template>
    <div>
-      <!-- <div>
-         <el-input
-            class="search-style"
-            placeholder="Search"
-            v-model="search.query"
-            size="small">
-               <el-button slot="append" @click=""><icon name="search"></icon></el-button>
-         </el-input>
-      </div> -->
-
       <project-search class="search"></project-search>
       <project-tree :namespace="root" @node-selected="onTreeNodeSelected"></project-tree>
    </div>

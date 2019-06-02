@@ -9,9 +9,9 @@
    BrowserWindow is loaded.
 */
 
-import Affinity from 'affinity'
-import axml from 'affinity-xml'
-import { EventEmitter } from 'events' 
+const Affinity = require('affinity')
+const axml = require('affinity-xml')
+const { EventEmitter } = require('events')
 //import utils from '@/lib/utils'
 //import events from './events'
 //import affVuex from '@/vuex/modules/affinity.js'
@@ -25,8 +25,13 @@ Affinity.use(axml)
 /**
  * Creates a new Affinity project
  */
-function create() {
+function create(preFill=false) {
    let project = Affinity.create()
+
+   if(preFill) {
+      fill(project, 4)
+   }
+   
    emitter.emit('project.created', project)
    return project
 }

@@ -14,7 +14,7 @@ let typeNames = [
 
 const state = {
    affinity: affinity,
-   project: affinity.create(),
+   project: affinity.create(true),
    failed: [],
    typeNames: typeNames
 }

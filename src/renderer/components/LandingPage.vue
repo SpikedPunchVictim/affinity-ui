@@ -53,20 +53,22 @@
 
 <template>
    <div>
-      <vue-splitter :margin="5">
-         <div slot="left-pane">
+      <splitpanes class="default-theme">
+         <div splitpanes-min="3">
             <!-- <project-namespace class="project" :project="project"></project-namespace> -->
             <project-view :project="project"></project-view>
          </div>
-         <div slot="right-pane">
+         <div >
             <details-view class="details" :object="selected"></details-view>
          </div>
-      </vue-splitter>
+      </splitpanes>
    </div>
 </template>
 
 <script>
-import VueSplitter from "@rmp135/vue-splitter"
+// import VueSplitter from "@rmp135/vue-splitter"
+//import { Multipane, MultipaneResizer } from 'vue-multipane'
+import Splitpanes from 'splitpanes'
 import SideBar from './SideBarView/SideBarView'
 import ProjectNamespaceView from './ProjectNamespaceView/ProjectNamespaceView'
 import ProjectView from '@/components/ProjectView/ProjectView'
@@ -82,12 +84,10 @@ export default {
          isPopualated: false
       }
    },
-   mounted: function() {
+   created: function() {
       // if (this.project == null) {
       //    this.createProject()
       // }
-      console.dir(this.project, { depth: null })
-
       events.renderer.on('project.populate', _ => {
          this.populateProject()
       })
@@ -122,7 +122,10 @@ export default {
       }
    },
    components: {
-      VueSplitter,
+      // VueSplitter,
+      // 'multipane': Multipane,
+      // 'multipane-resizer': MultipaneResizer,
+      Splitpanes,
       SideBar,
       'project-namespace': ProjectNamespaceView,
       DetailsView,
