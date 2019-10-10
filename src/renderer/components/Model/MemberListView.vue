@@ -11,7 +11,7 @@
 
 .member:hover {
    cursor: pointer;
-   background: lightblue;
+   background: rgb(95, 187, 218);
 }
 
 .member-name {

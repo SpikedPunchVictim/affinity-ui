@@ -51,11 +51,35 @@ export const setLastSavePath = ({ commit }, directory) => {
 * update: function(value) : Promise
 */
 export const updateValue = ({ dispatch, commit, state }, { value, update }) => {
-  commit(types.UPDATE_VALUE, value, update)
+  //commit(types.UPDATE_VALUE, { value, update })
+  let promise = null;
+
+  let onError = err => {
+     events.emit('message', 'error', `Setting the value of type ${value.type} failed. Reason: ${err.stack}`)
+  }
+
+  try {
+     promise = update(value)
+  } catch(err) {
+     onError(err)
+     return
+  }
+  
+  if(promise != null) {
+     promise
+        .then(_ => events.emit('success', `Successfully updated value of type ${value.type}`))
+        .catch(err => onError(err))
+  }
+
+  return promise
+}
+
+export const updateSimpleValue = ({ dispatch, commit, state }, { value, val }) => {
+  //commit(types.UPDATE_SIMPLE_VALUE, { value, val })
 }
 
 export const updateQualifiedObject = ({ commit }, { obj, update }) => {
-   commit(types.UPDATE_QUALIFIED_OBJECT, obj, update)
+   commit(types.UPDATE_QUALIFIED_OBJECT, { obj, update })
 }
 
 export const createProject = ({ commit }) => {

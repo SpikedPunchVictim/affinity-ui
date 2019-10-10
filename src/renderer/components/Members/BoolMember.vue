@@ -4,18 +4,14 @@
 
 <template>
    <span>
-      <span
-         @click="editing=true"
-         v-show="!editing">
+      <span @mousedown="editing=true">
          {{ value.value }}
       </span>
       <span v-show="editing">
          <el-checkbox 
-            @change="onCheckChanged"
-            value="isChecked"
+            v-model="isChecked"
             true-label="true"
             false-label="false">
-            {{ value.value }}
          </el-checkbox>
       </span>
    </span>
@@ -23,6 +19,9 @@
 
 <script>
 import { mapActions } from 'vuex'
+
+// Test
+import { create, types } from '@/services/affinity'
 
 export default {
    name: 'member-bool',
@@ -38,9 +37,14 @@ export default {
          editing: false
       }
    },
+   mounted() {
+      let proj = create()
+      let model = proj.root.models.new('first')
+      this.value = model.members.new('boolean', types.bool.type())
+   },
    methods: {
       ...mapActions([
-         'updateValue'
+         'updateValue', 'updateSimpleValue'
       ]),
       onEdit() {
          if(!this.editable) {
@@ -50,7 +54,7 @@ export default {
          this.editing = true
       },
       onCheckChanged(checked) {
-         console.dir(this.value)
+         console.dir(checked)
          this.updateValue({
             value: this.value,
             update: v => v.update(checked)
@@ -58,8 +62,23 @@ export default {
       }
    },
    computed: {
-      isChecked() {
-         return this.value.value
+      isChecked: {
+         get: function() {
+            return this.value.value
+         },
+         set: function(val) {
+            //this.updateSimpleValue({ value: this.value, val: val })
+            this.value.update(val)
+            // this.updateValue({
+            //    value: this.value,
+            //    update: v => v.update(val)
+            // })
+         }
+      }
+   },
+   watch: {
+      isHovering: function(oldVal, newVal) {
+         console.log(`old: ${oldVal}   new: {newVal}`)
       }
    }
 }

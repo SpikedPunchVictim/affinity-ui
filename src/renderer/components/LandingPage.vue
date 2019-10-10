@@ -58,8 +58,8 @@
             <!-- <project-namespace class="project" :project="project"></project-namespace> -->
             <project-view :project="project"></project-view>
          </div>
-         <div >
-            <details-view class="details" :object="selected"></details-view>
+         <div>
+            <!-- <details-view v-if="project != null" class="details" :object="selected"></details-view> -->
          </div>
       </splitpanes>
    </div>
@@ -73,7 +73,7 @@ import SideBar from './SideBarView/SideBarView'
 import ProjectNamespaceView from './ProjectNamespaceView/ProjectNamespaceView'
 import ProjectView from '@/components/ProjectView/ProjectView'
 import DetailsView from './DetailsView'
-//import Affinity from '@/services/affinity'
+import { create, setActiveProject } from '@/services/affinity'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import events from '@/services/events'
 
@@ -81,41 +81,49 @@ export default {
    name: 'landing-page',
    data() {
       return {
-         isPopualated: false
+         isPopualated: false,
+         project: null
       }
    },
    created: function() {
+      //this.project = setActiveProject(create(true))
       // if (this.project == null) {
       //    this.createProject()
       // }
-      events.renderer.on('project.populate', _ => {
-         this.populateProject()
+      // events.renderer.on('project.populate', _ => {
+      //    this.populateProject()
+      // })
+   },
+   mounted: function() {
+      // The nextTick guarantees the children are loaded
+      this.$nextTick(function() {
+         this.project = setActiveProject(create(true))
       })
    },
    methods: {
-      ...mapActions([
-         'createProject',
-         'populateProject'
-      ]),
+      // ...mapActions([
+      //    'createProject',
+      //    'populateProject'
+      // ]),
       log(msg) {
          console.log(`[LandingPage] ${msg}`)
       }
    },
    computed: {
-      ...mapGetters([
-         'project'
-      ]),
-      ...mapState({
-         selected: state => state.selected.selected,
-      }),
+      // ...mapGetters([
+      //    'project'
+      // ]),
+      // ...mapState({
+      //    selected: state => state.selected.selected,
+      // }),
       // project: function() {
       //    this.log('Affinity:')
       //    console.dir(this.$store.state.affinity)
       //    return this.$store.state.affinity.project
       // },
       getRoot: function() {
-         //return this.project
-         return this.$store.state.affinity.project.root
+         return this.project.root
+         //return this.$store.state.affinity.project.root
       },
       hasProject: function() {
          return this.project != null

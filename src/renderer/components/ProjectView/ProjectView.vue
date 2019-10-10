@@ -9,7 +9,7 @@
 <template>
    <div>
       <project-search class="search"></project-search>
-      <project-tree :namespace="root" @node-selected="onTreeNodeSelected"></project-tree>
+      <project-tree v-if="root != null" :namespace="root" @node-selected="onTreeNodeSelected"></project-tree>
    </div>
 </template>
 
@@ -43,10 +43,10 @@ export default {
          }
       }
    },
-   created: function() {
-      this.log(`created project: ${this.project}`)
-      this.namespace = this.project.root
-   },
+   // created: function() {
+   //    this.log(`created project: ${this.project}`)
+   //    this.namespace = this.project.root
+   // },
    methods: {
       ...mapActions(['selectObject']),
       onSearch() {

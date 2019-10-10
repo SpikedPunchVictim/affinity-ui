@@ -88,7 +88,7 @@ class Node extends EventEmitter {
 
     let { children, models, instances } = this.item
 
-    let test = items => { console.dir(items); items.forEach(obj => addNode(obj.item)); }
+    let test = items => { items.forEach(obj => addNode(obj.item)); }
 
     this.item.on(Events.namespace.childAdded, test /*items => items.forEach(obj => addNode(obj.item))*/)
     this.item.on(Events.namespace.modelAdded, items => items.forEach(obj => addNode(obj.item)))

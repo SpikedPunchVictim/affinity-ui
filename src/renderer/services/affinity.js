@@ -22,6 +22,8 @@ let emitter = new EventEmitter()
 
 Affinity.use(axml)
 
+let activeProject = null
+
 /**
  * Creates a new Affinity project
  */
@@ -65,6 +67,11 @@ function save(project, saveDir) {
    emitter.emit('project.saved', { project, dir: saveDir })
 }
 
+function setActiveProject(project) {
+   activeProject = project
+   return activeProject 
+}
+
 function fill(project, depth = 3) {
    console.log('filling...')
    Affinity.test.fill.project(project, depth)
@@ -78,5 +85,8 @@ export default {
    create: create,
    events: emitter,
    fill: fill,
-   save: save
+   activeProject: activeProject,
+   save: save,
+   setActiveProject: setActiveProject,
+   types: Affinity.types
 }

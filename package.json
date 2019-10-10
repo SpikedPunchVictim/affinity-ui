@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "author": "qof_4@hotmail.com",
   "description": "UI for the affinity data system",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js",
@@ -27,7 +27,7 @@
     "@bosket/core": "^0.4.4",
     "@bosket/tools": "^0.4.4",
     "@bosket/vue": "^0.4.4",
-    "affinity": "file:../affinity/affinity-0.0.9.tgz",
+    "affinity": "file:../affinity/affinity-0.0.10.tgz",
     "affinity-xml": "file:../affinity-xml/affinity-xml-1.0.1.tgz",
     "natural-orderby": "^2.0.3",
     "splitpanes": "^1.14.2",

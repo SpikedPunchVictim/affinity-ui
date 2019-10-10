@@ -72,6 +72,18 @@ const mutations = {
       state.project = project
    },
 
+   [types.UPDATE_SIMPLE_VALUE](state, { value, val }) {
+      let onError = err => {
+         events.emit('message', 'error', `Setting the value of type ${value.type} failed. Reason: ${err.stack}`)
+      }
+
+      try {
+         value.update(val)
+      } catch(err) {
+         onError(err)
+      }
+   },
+
    [types.UPDATE_VALUE](state, { value, update }) {
       let promise = null;
 
