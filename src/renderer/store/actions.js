@@ -89,3 +89,7 @@ export const createProject = ({ commit }) => {
 export const populateProject = ({ commit }) => {
   commit(types.PROJECT_POPULATE)
 }
+
+export const setProject = ({ commit }, { project }) => {
+  commit(types.PROJECT_SET, { project })
+}

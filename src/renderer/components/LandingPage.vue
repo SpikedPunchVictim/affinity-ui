@@ -56,9 +56,10 @@
       <splitpanes class="default-theme">
          <div splitpanes-min="3">
             <!-- <project-namespace class="project" :project="project"></project-namespace> -->
-            <project-view :project="project"></project-view>
+            <project-view v-bind:project="project"></project-view>
          </div>
          <div>
+            {{ hasProject }}
             <!-- <details-view v-if="project != null" class="details" :object="selected"></details-view> -->
          </div>
       </splitpanes>
@@ -82,7 +83,7 @@ export default {
    data() {
       return {
          isPopualated: false,
-         project: null
+         //project: null
       }
    },
    created: function() {
@@ -96,9 +97,9 @@ export default {
    },
    mounted: function() {
       // The nextTick guarantees the children are loaded
-      this.$nextTick(function() {
-         this.project = setActiveProject(create(true))
-      })
+      // this.$nextTick(function() {
+      //    this.project = setActiveProject(create(true))
+      // })
    },
    methods: {
       // ...mapActions([
@@ -110,9 +111,9 @@ export default {
       }
    },
    computed: {
-      // ...mapGetters([
-      //    'project'
-      // ]),
+      ...mapGetters([
+         'project'
+      ]),
       // ...mapState({
       //    selected: state => state.selected.selected,
       // }),
@@ -121,11 +122,12 @@ export default {
       //    console.dir(this.$store.state.affinity)
       //    return this.$store.state.affinity.project
       // },
-      getRoot: function() {
-         return this.project.root
-         //return this.$store.state.affinity.project.root
-      },
+      // getRoot: function() {
+      //    return this.project.root
+      //    //return this.$store.state.affinity.project.root
+      // },
       hasProject: function() {
+         console.log(`${__filename}: hasProject? ${this.project != null}`)
          return this.project != null
       }
    },

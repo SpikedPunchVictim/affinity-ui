@@ -9,6 +9,7 @@
    BrowserWindow is loaded.
 */
 
+import Vue from 'vue' // Needed to access the store to set the active project
 const Affinity = require('affinity')
 const axml = require('affinity-xml')
 const { EventEmitter } = require('events')
@@ -16,13 +17,21 @@ const { EventEmitter } = require('events')
 //import events from './events'
 //import affVuex from '@/vuex/modules/affinity.js'
 const settings = require('./settings')
+import { mapActions } from 'vuex'
+import events from '@/services/events'
 
-let events = require('./events')
 let emitter = new EventEmitter()
 
 Affinity.use(axml)
 
 let activeProject = null
+
+// events.on('app.loaded', _ => {
+//    let project = create(true)
+//    let { setProject } = mapActions(['setProject'])
+//    setProject({ project })
+//    //Vue.store.actions.setProject(project)
+// })
 
 /**
  * Creates a new Affinity project
@@ -33,8 +42,7 @@ function create(preFill=false) {
    if(preFill) {
       fill(project, 4)
    }
-   
-   emitter.emit('project.created', project)
+
    return project
 }
 

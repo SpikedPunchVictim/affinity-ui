@@ -14,7 +14,7 @@ let typeNames = [
 
 const state = {
    affinity: affinity,
-   project: affinity.create(true),
+   project: null,
    failed: [],
    typeNames: typeNames
 }
@@ -48,11 +48,6 @@ affinity.events.on('project.load.success', project => {
    state.project = project
 })
 
-affinity.events.on('project.created', project => {
-   state.project = project
-})
-
-
 const mutations = {
    [types.PROJECT_CREATE_NEW](state) {
       let project = affinity.create()
@@ -68,6 +63,7 @@ const mutations = {
          project = affinity.create()
       }
 
+      console.log('[vuex/affinity] Populating...')
       affinity.fill(project)
       state.project = project
    },
@@ -132,6 +128,12 @@ const mutations = {
 
    [types.PROJECT_SAVE](state, { saveDir }) {
       
+   },
+
+   [types.PROJECT_SET](state, { project }) {
+      console.log(`${__filename}: Setting project from Vuex`)
+      console.dir(project, { depth: null })
+      state.project = project
    }
 }
 

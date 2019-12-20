@@ -52,6 +52,7 @@
 <script>
 import store from '@/store'
 import events from '@/services/events'
+import affinity from '@/services/affinity'
 //import FileSystemService from './components/FileSystem/FileSystemService'
 import { mapActions } from 'vuex'
 
@@ -68,7 +69,7 @@ export default {
       
       events.on('message', (type, message) => {
          // types: success, error, info, warning
-         this.$message({ type: type, messaage: message })
+         this.$message({ type: type, message: message })
       })
 
       events.on('project.open.start', _ => this.loadingProject = true)
@@ -80,10 +81,18 @@ export default {
             message: `Failed to load project. Reason:\n${err}`
          })
       })
+
+      // All children will have been rendered when this function runs
+      this.$nextTick(function () {
+         events.emit('app.loaded')
+         let project = affinity.create(true)
+         this.setProject({ project })
+         console.log(__filename + `: Project has been set`)
+      })
    },
    methods: {
       ...mapActions([
-         'populateProject'
+         'setProject'
       ]),
       saveFile: function() {
          this.emitter.emit('project.open')

@@ -27,15 +27,15 @@
     "@bosket/core": "^0.4.4",
     "@bosket/tools": "^0.4.4",
     "@bosket/vue": "^0.4.4",
-    "affinity": "file:../affinity/affinity-0.0.10.tgz",
-    "affinity-xml": "file:../affinity-xml/affinity-xml-1.0.1.tgz",
+    "affinity": "file:../affinity",
+    "affinity-xml": "file:../affinity-xml",
     "natural-orderby": "^2.0.3",
     "splitpanes": "^1.14.2",
     "vue": "^2.5.16",
     "vue-awesome": "^3.3.1",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1",
+    "vuex": "^3.1.2",
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {

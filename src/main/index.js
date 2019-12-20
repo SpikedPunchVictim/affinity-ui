@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu } from 'electron'
 
 /**
  * Set `__static` path to static files in production

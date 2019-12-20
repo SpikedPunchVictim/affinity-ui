@@ -62,7 +62,8 @@ export default {
       }
    },
    computed: {
-      root() {
+      root: function() {
+         console.log(__filename + `: I has project? ${this.project ? this.project._root : null}`)
          return this.project ? this.project._root : null
       }
    },
