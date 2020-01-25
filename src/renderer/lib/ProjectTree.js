@@ -2,6 +2,8 @@ const { EventEmitter } = require('events')
 const { Events, utils, ObservableCollection } = require('affinity')
 const { compare} = require('natural-orderby')
 
+import Vue from 'vue'
+
 export const NodeType = {
   Instance: "instance",
   Model: "model",
@@ -50,6 +52,16 @@ class Node extends EventEmitter {
     )
   }
 
+  static empty() {
+    return {
+      name: "Root",
+      type: NodeType.Namespace,
+      item: null,
+      id: "_root",
+      children: []
+    }
+  }
+
   /**
    * Gets the priority when ordering the Qualified items in the Tree
    * 
@@ -79,6 +91,7 @@ class Node extends EventEmitter {
 
     let addNode = qualifiedObject => {
       let node = new Node(qualifiedObject)
+      node.populate()
       node.on('disposed', obj => this._onDisposed(obj.item))
       
       let sortedIndex = this.getSortedIndex(node)
@@ -175,6 +188,8 @@ export class Tree {
   constructor(namespace) {
     this.namespace = namespace
     this.children = []
+    this.node = Node.empty()
+    this.data = [this.node]
   }
 
   static empty() {
@@ -204,8 +219,13 @@ export class Tree {
   }
 
   populate(options) {
-    let root = new Node(this.item)
-    root.populate(options)
-    return [root]
+    if(this.item == null) {
+      return
+    }
+
+    let node = new Node(this.item)
+    node.populate(options)
+    this.node = node
+    this.data = [this.node]
   }
 }

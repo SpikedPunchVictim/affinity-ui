@@ -27,7 +27,6 @@ export default {
    },
    data() {
       return {
-         namespace: null,
          search: {
             query: '',
             filter: {
@@ -63,14 +62,9 @@ export default {
    },
    computed: {
       root: function() {
-         console.log(__filename + `: I has project? ${this.project ? this.project._root : null}`)
+         console.log(`[ProjectView] computed:root Has Project Root Changed? ${this.project ? this.project.item : null}`)
+         console.dir(this.project)
          return this.project ? this.project._root : null
-      }
-   },
-   watch: {
-      project: function(newProj, oldProj) {
-         this.log(`Setting new namespace`)
-         this.namespace = newProj.root
       }
    },
    components: {

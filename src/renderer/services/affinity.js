@@ -17,14 +17,22 @@ const { EventEmitter } = require('events')
 //import events from './events'
 //import affVuex from '@/vuex/modules/affinity.js'
 const settings = require('./settings')
-import { mapActions } from 'vuex'
 import events from '@/services/events'
+let Project = require('@/stores/project').default
 
 let emitter = new EventEmitter()
 
 Affinity.use(axml)
 
-let activeProject = null
+let active = {
+   project: {}
+}
+
+// events.on('app.loaded', _ => {
+//    let project = create(true)
+//    console.log(Object.keys(Project))
+//    Project.xxx(project)
+// })
 
 // events.on('app.loaded', _ => {
 //    let project = create(true)
@@ -76,8 +84,8 @@ function save(project, saveDir) {
 }
 
 function setActiveProject(project) {
-   activeProject = project
-   return activeProject 
+   active.project = project
+   return active 
 }
 
 function fill(project, depth = 3) {
@@ -93,7 +101,7 @@ export default {
    create: create,
    events: emitter,
    fill: fill,
-   activeProject: activeProject,
+   active: active,
    save: save,
    setActiveProject: setActiveProject,
    types: Affinity.types

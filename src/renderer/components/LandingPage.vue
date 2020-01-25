@@ -49,18 +49,31 @@
 .column {
    float: right;
 }
+
+
+.el-menu-vertical:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+  }
 </style>
 
 <template>
    <div>
+      <!-- <el-menu class="el-menu-vertical" :collapse="true" background-color="#545c64">
+         <el-submenu index="1">
+            <template slot="title">
+               <i class="el-icon-circle-plus-outline"></i>
+            </template>
+         </el-submenu>
+      </el-menu> -->
+
       <splitpanes class="default-theme">
          <div splitpanes-min="3">
             <!-- <project-namespace class="project" :project="project"></project-namespace> -->
-            <project-view v-bind:project="project"></project-view>
+            <project-view :project="project"></project-view>
          </div>
          <div>
-            {{ hasProject }}
-            <!-- <details-view v-if="project != null" class="details" :object="selected"></details-view> -->
+            <details-view v-if="project != null" class="details" :object="selected"></details-view>
          </div>
       </splitpanes>
    </div>
@@ -74,62 +87,38 @@ import SideBar from './SideBarView/SideBarView'
 import ProjectNamespaceView from './ProjectNamespaceView/ProjectNamespaceView'
 import ProjectView from '@/components/ProjectView/ProjectView'
 import DetailsView from './DetailsView'
-import { create, setActiveProject } from '@/services/affinity'
+import { active, create, setActiveProject } from '../services/affinity'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import events from '@/services/events'
+import { Container, populate } from '@/stores/project'
 
 export default {
    name: 'landing-page',
    data() {
       return {
          isPopualated: false,
-         //project: null
+         project: Container.project
       }
    },
-   created: function() {
-      //this.project = setActiveProject(create(true))
-      // if (this.project == null) {
-      //    this.createProject()
-      // }
-      // events.renderer.on('project.populate', _ => {
-      //    this.populateProject()
-      // })
-   },
    mounted: function() {
-      // The nextTick guarantees the children are loaded
-      // this.$nextTick(function() {
-      //    this.project = setActiveProject(create(true))
-      // })
+      this.$nextTick(function() {
+         populate()
+      })
    },
    methods: {
-      // ...mapActions([
-      //    'createProject',
-      //    'populateProject'
-      // ]),
       log(msg) {
          console.log(`[LandingPage] ${msg}`)
       }
    },
    computed: {
       ...mapGetters([
-         'project'
+         //'project',
+         'selected'
       ]),
-      // ...mapState({
-      //    selected: state => state.selected.selected,
-      // }),
-      // project: function() {
-      //    this.log('Affinity:')
-      //    console.dir(this.$store.state.affinity)
-      //    return this.$store.state.affinity.project
-      // },
-      // getRoot: function() {
-      //    return this.project.root
-      //    //return this.$store.state.affinity.project.root
-      // },
       hasProject: function() {
          console.log(`${__filename}: hasProject? ${this.project != null}`)
          return this.project != null
-      }
+      },
    },
    components: {
       // VueSplitter,

@@ -49,15 +49,16 @@
    </div>
 </template>
 
-<script>
+<script lang="ts">
 import store from '@/store'
 import events from '@/services/events'
 import affinity from '@/services/affinity'
 //import FileSystemService from './components/FileSystem/FileSystemService'
 import { mapActions } from 'vuex'
-
+import { Project } from '@/stores/project'
 
 export default {
+   name: "app",
    data() {
       return {
          emitter: events,
@@ -65,30 +66,32 @@ export default {
       }
    },
    mounted: function() {
-      console.log(`[App.vue : mounted] ${events}`)
+      // console.log(`[App.vue : mounted] ${events}`)
+      // console.dir(this.state, { depth: null })
       
-      events.on('message', (type, message) => {
-         // types: success, error, info, warning
-         this.$message({ type: type, message: message })
-      })
+      // events.on('message', (type, message) => {
+      //    // types: success, error, info, warning
+      //    this.$message({ type: type, message: message })
+      // })
 
-      events.on('project.open.start', _ => this.loadingProject = true)
-      events.on('project.open.success', _ => this.loadingProject = false)
-      events.on('project.open.failed', err => {
-         this.loadingProject = false
-         this.$message({
-            type: 'error',
-            message: `Failed to load project. Reason:\n${err}`
-         })
-      })
+      // events.on('project.open.start', _ => this.loadingProject = true)
+      // events.on('project.open.success', _ => this.loadingProject = false)
+      // events.on('project.open.failed', err => {
+      //    this.loadingProject = false
+      //    this.$message({
+      //       type: 'error',
+      //       message: `Failed to load project. Reason:\n${err}`
+      //    })
+      // })
 
-      // All children will have been rendered when this function runs
-      this.$nextTick(function () {
-         events.emit('app.loaded')
-         let project = affinity.create(true)
-         this.setProject({ project })
-         console.log(__filename + `: Project has been set`)
-      })
+      // // All children will have been rendered when this function runs
+      // this.$nextTick(function () {
+      //    events.emit('app.loaded')
+      //    // let project = affinity.create(true)
+      //    // Project.set(project)
+      //    //this.setProject({ project })
+      //    console.log(__filename + `: Project has been set`)
+      // })
    },
    methods: {
       ...mapActions([

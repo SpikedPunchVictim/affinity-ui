@@ -19,6 +19,7 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
+    "rm:modules": "rimraf node_modules",
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": ""
@@ -29,6 +30,7 @@
     "@bosket/vue": "^0.4.4",
     "affinity": "file:../affinity",
     "affinity-xml": "file:../affinity-xml",
+    "fs-extra": "^8.1.0",
     "natural-orderby": "^2.0.3",
     "splitpanes": "^1.14.2",
     "vue": "^2.5.16",
@@ -80,6 +82,7 @@
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
     "require-dir": "^1.0.0",
+    "rimraf": "^3.0.0",
     "spectron": "^3.8.0",
     "style-loader": "^0.21.0",
     "url-loader": "^1.0.1",

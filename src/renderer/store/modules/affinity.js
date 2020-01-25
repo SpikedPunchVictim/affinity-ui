@@ -1,7 +1,9 @@
 import * as types from '../mutation-types'
 import affinity from '@/services/affinity'
 import events from '@/services/events'
+import { Tree } from '@/lib/ProjectTree'
 import { populateProject } from '../actions'
+import Vue from 'vue'
 
 let typeNames = [
    'bool',
@@ -12,20 +14,25 @@ let typeNames = [
    'collection'
 ]
 
+/*
+Note:
+   We should add 
+
+*/
 const state = {
    affinity: affinity,
-   project: null,
+   project: {},
    failed: [],
    typeNames: typeNames
 }
 
-events.main.on('project.open', (event, dirPath) => {
-   events.emit('project.open.start', dirPath)
-   affinity.load(dirPath)
-      .then(proj => state.project = proj)
-      .then(_ => events.emit('project.open.success', state.project))
-      .catch(err => events.emit('project.open.failed', err))
-})
+// events.main.on('project.open', (event, dirPath) => {
+//    events.emit('project.open.start', dirPath)
+//    affinity.load(dirPath)
+//       .then(proj => state.project = proj)
+//       .then(_ => events.emit('project.open.success', state.project))
+//       .catch(err => events.emit('project.open.failed', err))
+// })
 
 events.on('project.save', (event, saveDir) => {
    affinity.save(state.project, saveDir)
@@ -43,29 +50,30 @@ events.on('project.save', (event, saveDir) => {
 //    // console.log('Populating: Done')
 // })
 
-affinity.events.on('project.load.success', project => {
-   console.log('Assigning Project')
-   state.project = project
-})
+// affinity.events.on('project.load.success', project => {
+//    console.log('Assigning Project')
+//    state.project = project
+//    state.doesChange = true
+// })
 
 const mutations = {
    [types.PROJECT_CREATE_NEW](state) {
-      let project = affinity.create()
-      state.project = project
-      console.dir(state.project)
+      // let project = affinity.create()
+      // state.project = project
+      // console.dir(state.project)
    },
 
    [types.PROJECT_POPULATE](state) {
-      let project = state.project
-      state.project = null
+      // let project = state.project
+      // state.project = null
 
-      if(project == null) {
-         project = affinity.create()
-      }
+      // if(project == null) {
+      //    project = affinity.create()
+      // }
 
-      console.log('[vuex/affinity] Populating...')
-      affinity.fill(project)
-      state.project = project
+      // console.log('[vuex/affinity] Populating...')
+      // affinity.fill(project)
+      // state.project = project
    },
 
    [types.UPDATE_SIMPLE_VALUE](state, { value, val }) {
@@ -131,9 +139,17 @@ const mutations = {
    },
 
    [types.PROJECT_SET](state, { project }) {
-      console.log(`${__filename}: Setting project from Vuex`)
-      console.dir(project, { depth: null })
-      state.project = project
+      //console.log(`${__filename}: Setting project from Vuex`)
+      // Object.assign(state.project || {}, project)
+      //Vue.set(state, 'project', project)
+
+
+
+      //console.dir(state.project, { depth: null })
+
+      // let tree = new Tree(project.root)
+      // tree.populate()
+      // Object.assign(state.project || {}, tree) 
    }
 }
 

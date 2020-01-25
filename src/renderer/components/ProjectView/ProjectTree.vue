@@ -64,9 +64,10 @@ export default {
    },
    data() {
       return {
-         model: [],
+         model: Tree.empty(),
          view: { name: '', children: [] },
          selection: [],
+         tree: null,
          defaultProps: {
             children: 'children',
             label: 'name',
@@ -92,14 +93,13 @@ export default {
       },
       refresh(namespace) { 
          if(namespace == null) {
-            this.model = []
+            this.model = Tree.empty()
             return
          }
 
-         this.model = (new Tree(namespace)).populate({ depth: -1 })
-
-         this.log('refreshed values:')
-         console.dir(this.model, { depth: null })
+         this.tree = new Tree(namespace)
+         this.tree.populate({ depth: -1 })
+         this.model = this.tree.data
       },
       getIcon: function(type) {
          this.log(`Icon Type: ${type}`)
