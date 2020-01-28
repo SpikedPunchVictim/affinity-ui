@@ -38,9 +38,9 @@ export default {
       }
    },
    mounted() {
-      let proj = create()
-      let model = proj.root.models.new('first')
-      this.value = model.members.new('boolean', types.bool.type())
+      // let proj = create()
+      // let model = proj.root.models.new('first')
+      // this.value = model.members.new('boolean', types.bool.type())
    },
    methods: {
       ...mapActions([

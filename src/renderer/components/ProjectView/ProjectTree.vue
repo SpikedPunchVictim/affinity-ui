@@ -102,7 +102,6 @@ export default {
          this.model = this.tree.data
       },
       getIcon: function(type) {
-         this.log(`Icon Type: ${type}`)
          return icon.get(type).icon
       },
       onContextMenu: function(event, node, prop, treeNode) {

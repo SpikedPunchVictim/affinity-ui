@@ -90,14 +90,15 @@ import DetailsView from './DetailsView'
 import { active, create, setActiveProject } from '../services/affinity'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import events from '@/services/events'
-import { Container, populate } from '@/stores/project'
+import { Container, populate, selected } from '@/stores/project'
 
 export default {
    name: 'landing-page',
    data() {
       return {
          isPopualated: false,
-         project: Container.project
+         project: Container.project,
+         selected: selected
       }
    },
    mounted: function() {
@@ -111,14 +112,15 @@ export default {
       }
    },
    computed: {
-      ...mapGetters([
-         //'project',
-         'selected'
-      ]),
       hasProject: function() {
          console.log(`${__filename}: hasProject? ${this.project != null}`)
          return this.project != null
       },
+   },
+   watch: {
+      selected: function(newObj, oldObj) {
+         console.dir(newObj)
+      }
    },
    components: {
       // VueSplitter,

@@ -18,6 +18,7 @@
 import { mapActions } from 'vuex'
 import ProjectTree from '@/components/ProjectView/ProjectTree'
 import ProjectSearch from '@/components/ProjectView/ProjectSearch'
+import { select } from '@/stores/project'
 import utils from '@/lib/utils'
 
 export default {
@@ -47,16 +48,15 @@ export default {
    //    this.namespace = this.project.root
    // },
    methods: {
-      ...mapActions(['selectObject']),
       onSearch() {
          this.log('click')
       },
       log(msg) {
          console.log(`[ProjectView] ${msg}`)
       },
-      onTreeNodeSelected(selected) {
-         if(!utils.isNamespace(selected)) {
-            this.selectObject({ obj: selected, multiSelect: true })
+      onTreeNodeSelected(obj) {
+         if(!utils.isNamespace(obj)) {
+            select(obj)
          }
       }
    },

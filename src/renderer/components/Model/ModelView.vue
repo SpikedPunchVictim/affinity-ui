@@ -74,7 +74,8 @@
 <script>
 //import MembersView from '@/components/Model/MemberTableView'
 //import MembersView from '@/components/Model/MemberTreeView'
-import MembersView from '@/components/Model/MemberListView'
+// import MembersView from '@/components/Model/MemberListView'
+import MembersView from '@/components/Model/MemberLabeledEditor'
 //import MembersView from '@/components/Model/DraggableMemberView'
 import CreateMember from '@/components/Modals/CreateMember2'
 import utils from '@/lib/utils' 
