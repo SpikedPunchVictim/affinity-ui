@@ -53,6 +53,7 @@
 
 <script>
 import { NodeType, Tree } from '@/lib/ProjectTree'
+import { AffinityUI } from '@/services/affinity'
 import icon from '@/lib/icon'
 import { mapActions, mapGetters } from 'vuex'
 import { ipcRenderer } from 'electron'
@@ -97,9 +98,7 @@ export default {
             return
          }
 
-         this.tree = new Tree(namespace)
-         this.tree.populate({ depth: -1 })
-         this.model = this.tree.data
+         this.model = AffinityUI.toTree(this.namespace)
       },
       getIcon: function(type) {
          return icon.get(type).icon

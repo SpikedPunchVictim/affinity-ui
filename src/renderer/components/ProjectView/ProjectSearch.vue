@@ -5,13 +5,18 @@
 
 .filter-list-item {
    margin-right: 5px;
+   margin-bottom: 4px
+}
+
+.searchbox {
+   margin-top: 4px
 }
 
 </style>
 
 <template>
    <div>
-      <el-input placeholder="Search..." :value="query" size="small">
+      <el-input placeholder="Search..." class="searchbox" :value="query" size="small">
          <el-select 
             slot="prepend"
             :value="select"
