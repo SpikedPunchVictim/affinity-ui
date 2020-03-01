@@ -16,7 +16,7 @@
          
          <template v-slot:label><span>{{ member.name }}</span></template>
          <template v-slot:editor>
-            <el-input placeholder="Please input" size="small">{{ displayValue(member) }}</el-input>
+            <el-input placeholder="Please input" size="small" :value="displayValue(member)"></el-input>
             <el-checkbox @change="editorChecked(member)" :key="member.name"></el-checkbox>
          </template>
          <template v-slot:detailed-editor v-if="checkedItems[member.name] === true">

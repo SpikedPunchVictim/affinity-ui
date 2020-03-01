@@ -32,7 +32,7 @@
     "affinity-xml": "file:../affinity-xml",
     "fs-extra": "^8.1.0",
     "natural-orderby": "^2.0.3",
-    "splitpanes": "^1.14.2",
+    "splitpanes": "^2.2.1",
     "vue": "^2.5.16",
     "vue-awesome": "^3.3.1",
     "vue-electron": "^1.0.6",
