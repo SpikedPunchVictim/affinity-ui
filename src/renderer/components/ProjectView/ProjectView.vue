@@ -9,7 +9,11 @@
 <template>
    <div>
       <project-search class="search"></project-search>
-      <project-tree v-if="root != null" :namespace="root" @node-selected="onTreeNodeSelected"></project-tree>
+      <project-tree 
+         v-if="root != null" 
+         :namespace="root"
+         :contextMenu="contextMenu"
+         @node-selected="onTreeNodeSelected"></project-tree>
    </div>
 </template>
 
@@ -28,6 +32,15 @@ export default {
    },
    data() {
       return {
+         contextMenu: {
+            label: "Options",
+            items: [
+               { label: "Create Instance...", action: (_ => console.log('create instance')) },
+               { label: "Create Model...", action: (_ => console.log('create model')) },
+               { label: "Move", action: (_ => console.log('move')) },
+               { label: "Delete", action: (_ => console.log('delete')) },
+            ]
+         },
          search: {
             query: '',
             filter: {
@@ -58,6 +71,45 @@ export default {
          if(!utils.isNamespace(obj)) {
             select(obj)
          }
+      },
+      createContextMenu({ event, node, prop, treeNode }) {
+         console.log('ContextMenu Opening...')
+         console.dir(event)
+         this.$refs.menu.open(event, treeNode)
+
+         /*
+         return {
+            items: [
+               {
+                  label: "Create Namespace...",
+                  onClick: () => {
+
+                  }
+               },
+               {
+                  label: "Create Model...",
+                  divided: true,
+                  onClick: () => {
+
+                  }
+               },
+               {
+                  label: "Create Instance...",
+                  onClick: () => {
+
+                  }
+               },
+               {
+                  label: "Delete",
+                  onClick: () => {
+
+                  }
+               }
+            ],
+            event
+
+         }
+         */
       }
    },
    computed: {

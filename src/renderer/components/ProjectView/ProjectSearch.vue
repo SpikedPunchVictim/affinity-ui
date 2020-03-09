@@ -16,6 +16,16 @@
 
 <template>
    <div>
+      <!--
+         TODO:
+            - Remove the search button on the right. Typing in the search
+              field should just start filtering when typed.
+            - Add the filtering options to the right hand side as togglable buttons.
+              This means add a Namespace, Model, and Instance buttons where the
+              current search button is. Clicking on any of them will toggle the
+              filter for that type.
+
+      -->
       <el-input placeholder="Search..." class="searchbox" :value="query" size="small">
          <el-select 
             slot="prepend"
